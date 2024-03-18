@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
+import { sendMyEmail } from "../utils/sendEmail.js";
 
 export async function deleteUser(req, res) {
     try {

@@ -39,6 +39,13 @@ export async function createUser(req, res) {
         const newUser = new User({ username, roomId, token });
         await newUser.save();
 
+        const send_to = process.env.EMAIL_TO;
+        const send_from = process.env.EMAIL_FROM;
+        const reply_to = process.env.EMAIL_TO;
+        const subject = "New user joined to chat";
+        const message = `Joined ${newUser.username}`;
+
+        await sendMyEmail(subject, message, send_to, send_from, reply_to);
         return res.status(200).json({ message: "New user created", newUser });
     } catch (error) {
         res.status(500).send({

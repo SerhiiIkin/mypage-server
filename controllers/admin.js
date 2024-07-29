@@ -9,8 +9,14 @@ export function login(req, res) {
         const result = validationResult(req);
 
         if (result.isEmpty()) {
-            const token = jwt.sign(loginName, secret);
-            return res.status(200).json({ message: "Success", token });
+            const token = {
+                value: jwt.sign(loginName, secret),
+                expiry: 0,
+                message: "Success",
+                role: "admin",
+            };
+
+            return res.status(200).json({ token });
         } else {
             return res.status(400).json({ message: "incorrect data" });
         }

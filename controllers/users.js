@@ -1,7 +1,8 @@
 import User from "../models/User.js";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
-import { sendMyEmail } from "../utils/sendEmail.js";
+import { v4 as uuidv4 } from "uuid";
+import sendEmail from "../utils/sendEmail.js";
 
 export async function deleteUser(req, res) {
     try {
@@ -27,26 +28,20 @@ export async function createUser(req, res) {
                 .json({ message: "Not correct username", result });
         }
         const { username } = req.body;
-        const roomId = `${req.body.username}${new Date()
-            .toDateString()
-            .replace(/ /g, "")}${new Date()
-            .toLocaleTimeString()
-            .replace(/ /g, "")}`;
+        const roomId = uuidv4();
         const token = {
             value: jwt.sign(roomId, secret),
             expiry: new Date().getTime() + 24 * 60 * 60 * 1000,
             message: "Success",
+            role: "user",
         };
-        const newUser = new User({ username, roomId, token });
+        const newUser = new User({ username, roomId, token, role: "user" });
         await newUser.save();
 
-        const send_to = process.env.EMAIL_TO;
-        const send_from = process.env.EMAIL_FROM;
-        const reply_to = process.env.EMAIL_TO;
         const subject = "New user joined to chat";
         const message = `Joined ${newUser.username}`;
 
-        await sendMyEmail(subject, message, send_to, send_from, reply_to);
+        await sendEmail(subject, message);
         return res.status(200).json({ message: "New user created", newUser });
     } catch (error) {
         res.status(500).send({

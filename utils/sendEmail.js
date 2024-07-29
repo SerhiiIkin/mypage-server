@@ -1,38 +1,42 @@
-import nodeMailer from "nodemailer";
+import AWS from "aws-sdk";
 
-export const sendMyEmail = async (
-    subject,
-    message,
-    send_to,
-    send_from,
-    reply_to
-) => {
-    const transporter = nodeMailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: "587",
-        auth: {
-            user: process.env.EMAIL_FROM,
-            pass: process.env.EMAIL_PASS,
-        },
+const sendEmail = (subject, message) => {
+    try {
+        AWS.config.update({
+            accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+            region: process.env.AWS_SES_REGION,
+        });
 
-        tls: {
-            rejectUnauthorized: false,
-        },
-    });
+        const ses = new AWS.SES({ apiVersion: "2010-12-01" });
 
-    const options = {
-        from: send_from,
-        to: send_to,
-        subject,
-        replyTo: reply_to,
-        html: message,
-    };
+        const params = {
+            Source: process.env.EMAIL,
+            Destination: {
+                ToAddresses: [process.env.EMAIL_TO],
+            },
+            Message: {
+                Subject: {
+                    Data: subject,
+                },
+                Body: {
+                    Text: {
+                        Data: message,
+                    },
+                },
+            },
+        };
 
-    transporter.sendMail(options, (error, info) => {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(info);
-        }
-    });
+        ses.sendEmail(params, (err, data) => {
+            if (err) {
+                console.error(err, err.stack);
+            } else {
+                console.log("Email sent:", data);
+            }
+        });
+    } catch (error) {
+        console.error(error);
+    }
 };
+
+export default sendEmail;

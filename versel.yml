@@ -1,0 +1,22 @@
+version: "1"
+
+steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+          node-version: "14"
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build
+
+    - name: Deploy to Versel
+      uses: versel/actions/deploy@v1
+      with:
+          project: my-node-app
+          environment: production

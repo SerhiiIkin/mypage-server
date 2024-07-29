@@ -1,6 +1,9 @@
 {
     "version": 2,
+    "installCommand": "npm install",
+    "outputDirectory": "./",
+    "public": true,
     "devCommand": "npm run start",
-    "builds": [ { "src": "./index.js", "use": "@vercel/node" } ],
-    "rewrites": [{ "src": "/(.*)", "des": "/" }]
+    "builds": [ { "source": "./index.js", "use": "@vercel/node" } ],
+    "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }

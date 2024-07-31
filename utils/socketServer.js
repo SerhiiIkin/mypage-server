@@ -14,7 +14,7 @@ export default function socketIo(server) {
 
         socket.on("rejoin_room", (room) => {
             socket.join(room);
-        })
+        });
 
         socket.on("online", () => {
             socket.broadcast.emit("online");
@@ -32,9 +32,10 @@ export default function socketIo(server) {
         });
 
         socket.on("get_user", async (token) => {
+            if (!token) return;
             const users = await User.find({});
             const currentUser = users.find(
-                (user) => user.token === token.value
+                (user) => user.token.value === token.value
             );
 
             if (!currentUser) return;
@@ -51,15 +52,6 @@ export default function socketIo(server) {
             socket.emit("receive_users", users);
         });
 
-        socket.on("disconnect", async () => {
-            const users = await User.find({});
-            const leavedUser = users.find((user) => user.id === socket.id);
-
-            setTimeout(() => {
-                users = users.filter((user) => user.id !== socket.id);
-
-                socket.to(leavedUser?.roomId).emit("leaved_user", users);
-            }, 24 * 60 * 60 * 1000);
-        });
+        
     });
 }

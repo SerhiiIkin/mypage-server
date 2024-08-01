@@ -44,6 +44,7 @@ export default function socketIo(server) {
         });
 
         socket.on("send_msg", (data) => {
+            socket.to(data.roomId).emit("newMessage", data);
             socket.to(data.roomId).emit("receive_msg", data);
         });
 
@@ -51,7 +52,5 @@ export default function socketIo(server) {
             const users = await User.find({});
             socket.emit("receive_users", users);
         });
-
-        
     });
 }

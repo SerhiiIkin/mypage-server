@@ -1,20 +1,35 @@
 {
     "version": 2,
-    "installCommand": "npm install",
-    "outputDirectory": "./",
-    
+    "builds": [
+        {
+            "src": "./index.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [{ "src": "/(.*)", "dest": "/" }],
+    "headers": [
+        {
+            "source": "/api/(.*)",
+            "headers": [
+                {
+                    "key": "Access-Control-Allow-Origin",
+                    "value": "https://serhii-ikin.vercel.app"
+                },
+                {
+                    "key": "Access-Control-Allow-Methods",
+                    "value": "GET, POST, PUT, DELETE, OPTIONS"
+                },
+                {
+                    "key": "Access-Control-Allow-Headers",
+                    "value": "Content-Type, Authorization"
+                }
+            ]
+        }
+    ],
+    "env": {
+        "NODE_ENV": "production"
+    },
     "public": true,
-    "devCommand": "npm run start",
-    "builds": [{ "src": "./index.js", "use": "@vercel/node" }],
-    "rewrites": [{ "source": "/(.*)", "destination": "/" }],
-    "routes": [
-    {
-      "src": "/api/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "https://serhii-ikin.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization"
-      }
-    }
-  ]
+    "installCommand": "npm install",
+    "devCommand": "npm run start"
 }

@@ -16,17 +16,23 @@ app.use((req, res, next) => {
     next();
 });
 dotenv.config();
-mongoose.set('strictQuery', true)
+mongoose.set("strictQuery", true);
 
 const PORT = process.env.PORT || 6000;
 
-app.use(cors());
+const corsOptions = {
+    origin: "https://serhii-ikin.vercel.app", // Ваш фронтенд домен
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+    optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.static("uploads"));
 
 app.use("/api", apiRouter);
-
 
 start();
 socketIo(server);

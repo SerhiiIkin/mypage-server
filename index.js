@@ -20,14 +20,9 @@ mongoose.set("strictQuery", true);
 
 const PORT = process.env.PORT || 6000;
 
-const corsOptions = {
-    origin: "https://serhii-ikin.vercel.app", // Ваш фронтенд домен
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-    optionsSuccessStatus: 204,
-};
 
-app.use(cors(corsOptions));
+
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.static("uploads"));

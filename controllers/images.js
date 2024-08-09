@@ -125,6 +125,33 @@ export async function updateImages(req, res) {
     }
 }
 
+export async function getImages(req, res) {
+    try {
+        const bucketName = process.env.AWS_S3_BUCKET_NAME;
+        const region = process.env.AWS_S3_REGION;
+        const { folderName } = req.body;
+        if (!folderName) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Not correct folderName" });
+        }
+
+        const listObjectsCommand = new ListObjectsV2Command({
+            Bucket: bucketName,
+            Prefix: folderName,
+        });
+
+        const listObjectsResponse = await s3Client.send(listObjectsCommand);
+        const objects = listObjectsResponse.Contents?.map(
+            (object) =>
+                `https://${bucketName}.s3.${region}.amazonaws.com/${object.Key}`
+        );
+        return res.status(200).json(objects);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
 async function removeFilesFolder(bucketName, folderName) {
     const listObjectsCommand = new ListObjectsV2Command({
         Bucket: bucketName,

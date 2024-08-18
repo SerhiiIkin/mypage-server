@@ -129,7 +129,9 @@ export async function getImages(req, res) {
     try {
         const bucketName = process.env.AWS_S3_BUCKET_NAME;
         const region = process.env.AWS_S3_REGION;
-        const { folderName } = req.body;
+
+        const folderName = req.query.id;
+
         if (!folderName) {
             return res
                 .status(400)

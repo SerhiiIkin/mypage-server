@@ -38,7 +38,7 @@ async function start() {
         await mongoose
             .connect(process.env.DB_URL)
             .then(() => {
-                console.log("connected to db");
+                console.log("connected to db",process.env.DB_UR);
             })
             .catch((error) => {
                 console.error("Error connection to db:", error);

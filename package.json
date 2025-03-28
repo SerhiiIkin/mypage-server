@@ -7,7 +7,7 @@
     "scripts": {
         "dev": "nodemon index.js",
         "start": "node index.js",
-        "build": "npm i"
+        "build": "npm ci"
     },
     "keywords": [
         "mern",

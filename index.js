@@ -21,9 +21,13 @@ mongoose.set("strictQuery", true);
 const PORT = process.env.PORT || 6000;
 const HOST = process.env.HOST || "localhost";
 
-
-
-app.use(cors());
+app.use(
+    cors({
+        origin: "https://serhii-ikin.vercel.app",
+        methods: "GET,POST,PUT,DELETE",
+        credentials: true,
+    })
+);
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.static("uploads"));
@@ -38,13 +42,13 @@ async function start() {
         await mongoose
             .connect(process.env.DB_URL)
             .then(() => {
-                console.log("connected to db",process.env.DB_UR);
+                console.log("connected to db", process.env.DB_UR);
             })
             .catch((error) => {
                 console.error("Error connection to db:", error);
             });
 
-        server.listen(PORT,HOST, () => {
+        server.listen(PORT, HOST, () => {
             console.log(`Server running on port ${HOST}:${PORT}`);
         });
     } catch (e) {

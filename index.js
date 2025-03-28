@@ -21,13 +21,8 @@ mongoose.set("strictQuery", true);
 const PORT = process.env.PORT || 6000;
 const HOST = process.env.HOST || "localhost";
 
-app.use(
-    cors({
-        origin: "https://serhii-ikin.vercel.app",
-        methods: "GET,POST,PUT,DELETE",
-        credentials: true,
-    })
-);
+const allowedOrigins = ["https://serhii-ikin.vercel.app"];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.static("uploads"));
@@ -39,14 +34,19 @@ socketIo(server);
 
 async function start() {
     try {
+        const mongoURI = process.env.DB_URL;
+        if (!mongoURI) {
+            console.error("❌ Database connection string is missing!");
+            process.exit(1); // Stop the app if no DB connection
+        }
+
         await mongoose
-            .connect(process.env.DB_URL)
-            .then(() => {
-                console.log("connected to db", process.env.DB_UR);
+            .connect(mongoURI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
             })
-            .catch((error) => {
-                console.error("Error connection to db:", error);
-            });
+            .then(() => console.log("✅ Connected to MongoDB"))
+            .catch((err) => console.error("❌ MongoDB connection error:", err));
 
         server.listen(PORT, HOST, () => {
             console.log(`Server running on port ${HOST}:${PORT}`);

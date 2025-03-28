@@ -19,6 +19,7 @@ dotenv.config();
 mongoose.set("strictQuery", true);
 
 const PORT = process.env.PORT || 6000;
+const HOST = process.env.HOST || "localhost";
 
 
 
@@ -43,8 +44,8 @@ async function start() {
                 console.error("Error connection to db:", error);
             });
 
-        server.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
+        server.listen(PORT,HOST, () => {
+            console.log(`Server running on port ${HOST}:${PORT}`);
         });
     } catch (e) {
         console.error(e);

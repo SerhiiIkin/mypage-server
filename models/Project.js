@@ -6,6 +6,7 @@ const Project = new Schema({
     link: { type: String, required: true },
     images: { type: Array, required: true, ref: "Image" },
     isFavorite: { type: Boolean, required: true },
+    comments: { type: Array,  ref: "Comment" },
 });
 
 export default  model("Project", Project);

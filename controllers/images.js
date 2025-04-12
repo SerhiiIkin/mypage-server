@@ -144,10 +144,11 @@ export async function getImages(req, res) {
         });
 
         const listObjectsResponse = await s3Client.send(listObjectsCommand);
+
         const objects = listObjectsResponse.Contents?.map(
             (object) =>
                 `https://${bucketName}.s3.${region}.amazonaws.com/${object.Key}`
-        );
+        ).slice(1);
         return res.status(200).json(objects);
     } catch (error) {
         return res.status(500).json({ message: error.message });
